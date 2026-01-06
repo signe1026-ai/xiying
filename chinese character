@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>汉字发音学习 - Chinese Character Pronunciation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Comic Sans MS', '楷体', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background-color: #f0f9ff;
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            background-color: white;
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            min-height: 85vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* 标题区域 */
+        .header {
+            background: linear-gradient(135deg, #ff9a76 0%, #ff6b6b 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-bottom: 10px solid #2a9d8f;
+        }
+        
+        .header h1 {
+            font-size: 42px;
+            margin-bottom: 10px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.2);
+        }
+        
+        .header p {
+            font-size: 20px;
+            opacity: 0.95;
+        }
+        
+        .header .english {
+            font-size: 18px;
+            margin-top: 10px;
+            font-style: italic;
+            opacity: 0.9;
+        }
+        
+        /* 内容区域 */
+        .content {
+            display: flex;
+            flex: 1;
+            padding: 0;
+        }
+        
+        /* 左侧汉字显示区 */
+        .char-display-section {
+            flex: 1;
+            padding: 40px;
+            background: linear-gradient(145deg, #e6f7ff, #d4edff);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .char-display-area {
+            background-color: white;
+            width: 100%;
+            max-width: 500px;
+            padding: 50px;
+            border-radius: 25px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .big-char {
+            font-size: 180px;
+            color: #264653;
+            margin-bottom: 30px;
+            height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-shadow: 5px 5px 0 rgba(38, 70, 83, 0.1);
+        }
+        
+        .pinyin {
+            font-size: 42px;
+            color: #e76f51;
+            margin-bottom: 15px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        
+        .meaning {
+            font-size: 24px;
+            color: #2a9d8f;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        
+        .english-meaning {
+            font-size: 20px;
+            color: #666;
+            font-style: italic;
+            margin-bottom: 40px;
+        }
+        
+        /* 右侧汉字选择区 */
+        .char-select-section {
+            flex: 1;
+            padding: 40px;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .section-title {
+            color: #2a9d8f;
+            font-size: 36px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .section-subtitle {
+            color: #666;
+            font-size: 18px;
+            text-align: center;
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+        
+        .quick-select-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-bottom: 50px;
+            flex: 1;
+        }
+        
+        .quick-btn {
+            background: linear-gradient(145deg, #a8dadc, #8bc9cc);
+            color: #264653;
+            border: none;
+            width: 100%;
+            height: 140px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            box-shadow: 0 15px 25px rgba(168, 218, 220, 0.3);
+        }
+        
+        .quick-btn:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 20px 35px rgba(168, 218, 220, 0.5);
+            background: linear-gradient(145deg, #8bc9cc, #a8dadc);
+        }
+        
+        .quick-btn.active {
+            background: linear-gradient(145deg, #ff9a76, #ff7a4c);
+            color: white;
+            transform: scale(1.1);
+            box-shadow: 0 20px 35px rgba(255, 154, 118, 0.5);
+        }
+        
+        .btn-label {
+            font-size: 20px;
+            text-align: center;
+            margin-top: 15px;
+            color: #2a9d8f;
+            font-weight: bold;
+        }
+        
+        .btn-english {
+            font-size: 16px;
+            text-align: center;
+            margin-top: 5px;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .voice-controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 40px;
+            border-top: 5px dashed #e6f7ff;
+        }
+        
+        .voice-btn {
+            background: linear-gradient(135deg, #ff9a76 0%, #ff6b6b 100%);
+            color: white;
+            border: none;
+            padding: 25px 50px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            box-shadow: 0 15px 30px rgba(255, 107, 107, 0.3);
+            width: 100%;
+            max-width: 350px;
+        }
+        
+        .voice-btn:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(255, 107, 107, 0.4);
+        }
+        
+        .voice-btn i {
+            margin-right: 20px;
+            font-size: 32px;
+        }
+        
+        .voice-tip {
+            margin-top: 15px;
+            font-size: 18px;
+            color: #2a9d8f;
+            text-align: center;
+            line-height: 1.5;
+        }
+        
+        .voice-tip-english {
+            margin-top: 5px;
+            font-size: 16px;
+            color: #666;
+            text-align: center;
+            font-style: italic;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 1100px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            .char-display-section, .char-select-section {
+                padding: 30px;
+            }
+            
+            .big-char {
+                font-size: 150px;
+                height: 180px;
+            }
+            
+            .quick-select-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 25px;
+            }
+            
+            .quick-btn {
+                height: 120px;
+                font-size: 48px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 32px;
+            }
+            
+            .header p {
+                font-size: 18px;
+            }
+            
+            .header .english {
+                font-size: 16px;
+            }
+            
+            .big-char {
+                font-size: 120px;
+                height: 150px;
+            }
+            
+            .pinyin {
+                font-size: 32px;
+            }
+            
+            .meaning {
+                font-size: 20px;
+            }
+            
+            .english-meaning {
+                font-size: 18px;
+            }
+            
+            .quick-select-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+            
+            .quick-btn {
+                height: 100px;
+                font-size: 40px;
+            }
+            
+            .voice-btn {
+                padding: 20px 40px;
+                font-size: 24px;
+            }
+            
+            .section-subtitle {
+                font-size: 16px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 28px;
+            }
+            
+            .char-display-section, .char-select-section {
+                padding: 20px;
+            }
+            
+            .char-display-area {
+                padding: 30px;
+            }
+            
+            .big-char {
+                font-size: 100px;
+                height: 130px;
+            }
+            
+            .pinyin {
+                font-size: 28px;
+            }
+            
+            .meaning, .english-meaning {
+                font-size: 18px;
+            }
+            
+            .quick-select-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+            
+            .quick-btn {
+                height: 90px;
+                font-size: 36px;
+            }
+            
+            .btn-label {
+                font-size: 16px;
+            }
+            
+            .btn-english {
+                font-size: 14px;
+            }
+            
+            .voice-btn {
+                padding: 18px 35px;
+                font-size: 22px;
+            }
+            
+            .voice-tip, .voice-tip-english {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 标题区域 -->
+        <div class="header">
+            <h1><i class="fas fa-volume-up"></i> 汉字发音学习</h1>
+            <p>点击汉字按钮选择，点击朗读按钮听发音</p>
+            <div class="english">Chinese Character Pronunciation - Click characters to select, click speak to listen</div>
+        </div>
+        
+        <!-- 内容区域 -->
+        <div class="content">
+            <!-- 左侧汉字显示区 -->
+            <section class="char-display-section">
+                <div class="char-display-area">
+                    <div class="big-char" id="current-char">人</div>
+                    <div class="pinyin" id="current-pinyin">rén</div>
+                    <div class="meaning" id="current-meaning">人类</div>
+                    <div class="english-meaning" id="current-english-meaning">Human, Person</div>
+                </div>
+            </section>
+            
+            <!-- 右侧汉字选择区 -->
+            <section class="char-select-section">
+                <h2 class="section-title">选择汉字</h2>
+                <div class="section-subtitle">Select Characters</div>
+                
+                <div class="quick-select-grid" id="quick-select-grid">
+                    <!-- 快速选择按钮将通过JavaScript动态生成 -->
+                </div>
+                
+                <div class="voice-controls">
+                    <button class="voice-btn" id="voice-btn">
+                        <i class="fas fa-volume-up"></i> 朗读汉字
+                    </button>
+                    <p class="voice-tip">点击上方按钮选择汉字，然后点击朗读按钮听发音</p>
+                    <p class="voice-tip-english">Click buttons above to select characters, then click speak to listen to pronunciation</p>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        // 汉字数据：人，一，二，三，四，生日
+        const hanziData = {
+            "人": {
+                pinyin: "rén",
+                meaning: "人类",
+                english: "Human, Person"
+            },
+            "一": {
+                pinyin: "yī",
+                meaning: "数字一",
+                english: "Number One"
+            },
+            "二": {
+                pinyin: "èr",
+                meaning: "数字二",
+                english: "Number Two"
+            },
+            "三": {
+                pinyin: "sān",
+                meaning: "数字三",
+                english: "Number Three"
+            },
+            "四": {
+                pinyin: "sì",
+                meaning: "数字四",
+                english: "Number Four"
+            },
+            "生": {
+                pinyin: "shēng",
+                meaning: "生命",
+                english: "Life, Birth"
+            },
+            "日": {
+                pinyin: "rì",
+                meaning: "太阳",
+                english: "Sun, Day"
+            },
+            "生日": {
+                pinyin: "shēng rì",
+                meaning: "生日",
+                english: "Birthday"
+            }
+        };
+        
+        // 当前显示的汉字
+        let currentChar = "人";
+        
+        // 初始化页面
+        function initPage() {
+            // 显示初始汉字
+            updateHanziDisplay(currentChar);
+            
+            // 初始化快速选择按钮
+            initQuickButtons();
+            
+            // 绑定事件
+            bindEvents();
+        }
+        
+        // 初始化快速选择按钮
+        function initQuickButtons() {
+            const quickSelectGrid = document.getElementById('quick-select-grid');
+            quickSelectGrid.innerHTML = '';
+            
+            const chars = ["人", "一", "二", "三", "四", "生", "日", "生日"];
+            
+            chars.forEach(char => {
+                const buttonContainer = document.createElement('div');
+                buttonContainer.className = 'button-container';
+                
+                const button = document.createElement('button');
+                button.className = 'quick-btn';
+                if (char === currentChar) {
+                    button.classList.add('active');
+                }
+                button.textContent = char;
+                button.dataset.char = char;
+                button.addEventListener('click', function() {
+                    selectHanzi(char);
+                });
+                
+                const label = document.createElement('div');
+                label.className = 'btn-label';
+                label.textContent = hanziData[char].pinyin;
+                
+                const englishLabel = document.createElement('div');
+                englishLabel.className = 'btn-english';
+                englishLabel.textContent = hanziData[char].english;
+                
+                buttonContainer.appendChild(button);
+                buttonContainer.appendChild(label);
+                buttonContainer.appendChild(englishLabel);
+                quickSelectGrid.appendChild(buttonContainer);
+            });
+        }
+        
+        // 选择汉字
+        function selectHanzi(char) {
+            currentChar = char;
+            updateHanziDisplay(currentChar);
+            
+            // 更新按钮状态
+            const buttons = document.querySelectorAll('.quick-btn');
+            buttons.forEach(btn => {
+                if (btn.dataset.char === char) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            // 自动朗读选中的汉字
+            setTimeout(speakHanzi, 300);
+        }
+        
+        // 绑定事件处理函数
+        function bindEvents() {
+            // 朗读按钮
+            document.getElementById('voice-btn').addEventListener('click', speakHanzi);
+        }
+        
+        // 更新汉字显示
+        function updateHanziDisplay(char) {
+            document.getElementById('current-char').textContent = char;
+            
+            const data = hanziData[char];
+            document.getElementById('current-pinyin').textContent = data.pinyin;
+            document.getElementById('current-meaning').textContent = data.meaning;
+            document.getElementById('current-english-meaning').textContent = data.english;
+        }
+        
+        // 朗读汉字
+        function speakHanzi() {
+            if ('speechSynthesis' in window) {
+                // 停止当前可能正在播放的语音
+                window.speechSynthesis.cancel();
+                
+                const utterance = new SpeechSynthesisUtterance(currentChar);
+                utterance.lang = 'zh-CN';
+                utterance.rate = 0.8;
+                utterance.pitch = 1.2; // 提高音调，更适合儿童
+                utterance.volume = 1.0;
+                
+                // 添加朗读完成后的回调
+                utterance.onend = function() {
+                    // 朗读完成后恢复按钮状态
+                    document.getElementById('voice-btn').innerHTML = '<i class="fas fa-volume-up"></i> 朗读汉字';
+                };
+                
+                // 朗读前改变按钮状态
+                document.getElementById('voice-btn').innerHTML = '<i class="fas fa-volume-up"></i> 朗读中...';
+                
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert('您的浏览器不支持语音朗读功能，请使用Chrome或Edge浏览器。');
+            }
+        }
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', initPage);
+        
+        // 添加自动欢迎语音
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                // 首次加载时自动播放欢迎语音
+                if (window.speechSynthesis && window.speechSynthesis.speak) {
+                    const utterance = new SpeechSynthesisUtterance("欢迎使用汉字发音学习");
+                    utterance.lang = 'zh-CN';
+                    utterance.rate = 0.8;
+                    utterance.pitch = 1.2;
+                    window.speechSynthesis.speak(utterance);
+                }
+            }, 1500);
+        });
+    </script>
+</body>
+</html>
